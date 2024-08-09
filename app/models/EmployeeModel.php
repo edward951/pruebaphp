@@ -1,57 +1,60 @@
 <?php
 
-require_once __DIR__ . '/../core/Model.php';
+require_once '../config/config.php';
 
-class EmployeeModel extends Model{
+class EmployeeModel {
+    private $conn;
 
-    public function getEmplooyees(){
+    public function __construct(){
+        $database = new Database();
+        $this->conn = $database->getConnection();
+    }
 
-        $stmt = $this->db->prepare('SELECT * FROM empleados' );
+    public function getAllEmployees(){
+        $query = "SELECT * FROM empleados";
+        $stmt = $this->conn->prepare($query);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function getEmplooyeesById($id) {
-        $stmt = $this->db->prepare('SELECT * FROM empleados WHERE id = :id');
+    public function getEmployeeById($id) {
+        $query = "SELECT * FROM empleados WHERE id = :id";
+        $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':id', $id);
         $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function createEmployees($nombre, $edad, $genero, $correo, $cargo, $fechaCreacion){
-        $stmt = $this->db->prepare('INSERT INTO empleados (nombre, edad, genero, corre, cargo, fecha_creacion) 
-        VALUES (:nombre, :edad, :genero, :corre, :cargo, fechaCreacion)');
-        $stmt->bindParam(':nombre',$nombre);
-        $stmt->bindParam(':edad',$edad);
-        $stmt->bindParam(':genero',$genero);
-        $stmt->bindParam(':correo',$correo);
-        $stmt->bindParam(':cargo',$cargo);
-        $stmt->bindParam(':fecha_creacion',$fechaCreacion);
+    public function createEmployees($data){
+        $query = "INSERT INTO empleados (nombre, edad, genero, correo, cargo, fecha_creacion) VALUES (:nombre, :edad, :genero, :correo, :cargo, :fecha_creacion)";
+        $stmt = $this->conn->prepare($query);
+        return $stmt->execute([
+            ':nombre' => $data['nombre'],
+            ':edad' => $data['edad'],
+            ':genero' => $data['genero'],
+            ':correo' => $data['correo'],
+            ':cargo' => $data['cargo'],
+            ':fecha_creacion' => $data['fecha_creacion']
+        ]);
+    }
 
+    public function updateEmployees($data){
+        $query = "UPDATE empleados SET nombre = :nombre, edad = :edad, genero = :genero, correo = :correo, cargo = :cargo WHERE id = :id";
+        $stmt = $this->conn->prepare($query);
+        return $stmt->execute([
+            ':nombre' => $data['nombre'],
+            ':edad' => $data['edad'],
+            ':genero' => $data['genero'],
+            ':correo' => $data['correo'],
+            ':cargo' => $data['cargo'],
+            ':id' => $data['id']
+        ]);
+    }
+
+    public function deleteEmployee($id){
+        $query = "DELETE FROM empleados WHERE id = :id";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':id', $id);
         return $stmt->execute();
     }
-
-    public function updateEmployees($id, $nombre, $edad, $genero, $correo, $cargo){
-        $stmt = $this->db->prepare('UPDATE employees SET nombre=:nombre, edad=:edad, genero=:genero, correo=:corre, cargo=:cargo');
-        $stmt->bindParam(':id',$id);
-        $stmt->bindParam(':nombre',$nombre);
-        $stmt->bindParam(':edad',$edad);
-        $stmt->bindParam(':genero',$genero);
-        $stmt->bindParam(':correo',$correo);
-        $stmt->bindParam(':cargo',$cargo);
-    }
-
-    public function deleteEmployees($id){
-        $stmt = $this->db->prepare('DELETE FROM employee WHERE id = :id');
-        $stmt ->bindParam(':id',$id);
-        return $stmt->execute();
-    }
-
-
-
-
 }
-
-
-
-?>

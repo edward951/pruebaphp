@@ -1,11 +1,19 @@
 <?php
-require_once __DIR__ . '/../app/core/Router.php';
 
-$url = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-$url = trim($url, '/');
+require_once '../app/controllers/EmployeeController.php';
 
-$router = new Router();
-$router->direct($url);
+$controllerName = isset($_GET['controller']) ? $_GET['controller'] : 'EmployeeController';
+$action = isset($_GET['action']) ? $_GET['action'] : 'index';
+$id = isset($_GET['id']) ? $_GET['id'] : null;
 
-
+if (class_exists($controllerName)) {
+    $controller = new $controllerName();
+    if ($id) {
+        $controller->$action($id);
+    } else {
+        $controller->$action();
+    }
+} else {
+    echo "Controller class $controllerName not found.";
+}
 ?>

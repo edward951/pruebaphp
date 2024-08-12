@@ -29,12 +29,11 @@ class EmployeeController extends Controller {
             $_SESSION['id'] = $empleado['id'];
             $_SESSION['usuario'] = $empleado['usuario'];
 
-            header('Location: ?controller=EmployeeController&action=index');
-            exit();
+            echo 'success';
 
         } else {
             //Si las credenciales no son correctas
-            $this->view('employee/login',['error'=> 'Usuario o contraseña son incorrectas']);
+           echo 'error';
         }
     }
 

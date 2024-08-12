@@ -3,7 +3,7 @@
 require_once '../app/controllers/EmployeeController.php';
 
 $controllerName = isset($_GET['controller']) ? $_GET['controller'] : 'EmployeeController';
-$action = isset($_GET['action']) ? $_GET['action'] : 'index';
+$action = isset($_GET['action']) ? $_GET['action'] : 'login';
 $id = isset($_GET['id']) ? $_GET['id'] : null;
 
 if (class_exists($controllerName)) {

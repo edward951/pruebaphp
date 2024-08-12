@@ -10,6 +10,15 @@ class EmployeeModel {
         $this->conn = $database->getConnection();
     }
 
+    public function verifyLogin($usuario, $contrasena){
+        $contrasenaHash = hash('sha256', $contrasena);
+
+        $query = "SELECT * FROM empleados  WHERE usuario = :usuario AND contrasena = :contrasena";
+        $stmt = $this->conn->prepare($query);
+        $stmt -> execute([':usuario' => $usuario, ':contrasena' => $contrasenaHash]);
+        return $stmt -> fetch();
+    }
+    
     public function getAllEmployees(){
         $query = "SELECT * FROM empleados";
         $stmt = $this->conn->prepare($query);
@@ -26,15 +35,22 @@ class EmployeeModel {
     }
 
     public function createEmployees($data){
-        $query = "INSERT INTO empleados (nombre, edad, genero, correo, cargo, fecha_creacion) VALUES (:nombre, :edad, :genero, :correo, :cargo, :fecha_creacion)";
+
+        $usuario = strtolower($data['nombre']) . '.' . strtolower($data['apellido']);
+        $contrasenaHash = hash('sha256', $data['contrasena']);
+
+        $query = "INSERT INTO empleados (nombre, apellido, usuario, edad, genero, correo, cargo, fecha_creacion, contrasena) VALUES (:nombre, :apellido, :usuario, :edad, :genero, :correo, :cargo, :fecha_creacion, :contrasena)";
         $stmt = $this->conn->prepare($query);
         return $stmt->execute([
             ':nombre' => $data['nombre'],
+            ':apellido' => $data['apellido'],
+            ':usuario' => $usuario,
             ':edad' => $data['edad'],
             ':genero' => $data['genero'],
             ':correo' => $data['correo'],
             ':cargo' => $data['cargo'],
-            ':fecha_creacion' => $data['fecha_creacion']
+            ':fecha_creacion' => $data['fecha_creacion'],
+            ':contrasena' => $contrasenaHash
         ]);
     }
 

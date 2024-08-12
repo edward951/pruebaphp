@@ -1,3 +1,15 @@
+<?php 
+session_start();
+
+if(!isset($_SESSION['id'])){
+    header('Location: /employee/login');
+    exit();
+}
+
+?>
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -16,7 +28,7 @@
         <thead>
             <tr>
                 <th>ID</th>
-                <th>Nombre</th>
+                <th>Usuario</th>
                 <th>Edad</th>
                 <th>Género</th>
                 <th>Correo</th>
@@ -29,7 +41,7 @@
                 <?php foreach ($employees as $employee) : ?>
                     <tr>
                         <td><?php echo htmlspecialchars($employee['id']); ?></td>
-                        <td><?php echo htmlspecialchars($employee['nombre']); ?></td>
+                        <td><?php echo htmlspecialchars($employee['usuario']); ?></td>
                         <td><?php echo htmlspecialchars($employee['edad']); ?></td>
                         <td><?php echo htmlspecialchars($employee['genero']); ?></td>
                         <td><?php echo htmlspecialchars($employee['correo']); ?></td>

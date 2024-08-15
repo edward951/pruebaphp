@@ -42,10 +42,10 @@
         <div class="form-group">
             <label for="stade">Estado:</label>
             <select name="estado" class="form-control" required>
-                <option value="1" <?php if ($employee['estado'] == 'Activo') echo 'selected'; ?>>Activo</option>
-                <option value="2" <?php if ($employee['estado'] == 'Inactivo') echo 'selected'; ?>>Inactivo</option>
-                <option value="3" <?php if ($employee['estado'] == 'Suspendido') echo 'selected'; ?>>Suspendido</option>
-                <option value="4" <?php if ($employee['estado'] == 'Retirado') echo 'selected'; ?>>Retirado</option>
+                <option value="1" <?php if ($employee['estado'] == 1) echo 'selected'; ?>>Activo</option>
+                <option value="2" <?php if ($employee['estado'] == 2) echo 'selected'; ?>>Inactivo</option>
+                <option value="3" <?php if ($employee['estado'] == 3) echo 'selected'; ?>>Suspendido</option>
+                <option value="4" <?php if ($employee['estado'] == 4) echo 'selected'; ?>>Retirado</option>
             </select>
         </div>
         <button type="submit" class="btn btn-primary">Actualizar</button>

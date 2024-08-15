@@ -55,5 +55,4 @@
         <a href="/index.php?controller=EmployeeController&action=index" class="btn btn-secondary mt-3">Volver</a>
     </div>
 </body>
-
 </html>

@@ -50,6 +50,18 @@ class EmployeeController extends Controller {
         $this->view('employee/index', ['employees' => $employees]); 
     }
 
+    public function getEmployeesJson() {
+        header('Content-type: application/json');
+
+        try {
+            $estado = 1;
+            $employee = $this->employeeModel->getStateEmployee($estado);
+            echo json_encode($employee);
+        } catch (\Exception $e) {
+            echo json_encode(['error' => $e->getMessage()]);
+        }
+    }
+
     public function create(){
         $this->view('employee/crear'); 
     }
@@ -67,8 +79,12 @@ class EmployeeController extends Controller {
                 'contrasena' => isset($_POST['contrasena']) ? $_POST['contrasena'] : '',
             ];
         
-            $this->employeeModel->createEmployees($data);
-            header('Location: index.php?controllers=EmployeeController&action=index');
+            $empleadoCreado = $this->employeeModel->createEmployees($data);
+            if($empleadoCreado === true ) {
+                header('Location: index.php?controller=EmployeeController&action=index&success=true');
+            } else {
+                header('Location: index.php?controller=EmployeeController&action=create&success=false');
+            }
         }
     }
 
@@ -86,9 +102,10 @@ class EmployeeController extends Controller {
                 'edad' => $_POST['edad'],
                 'genero' => $_POST['genero'],
                 'correo' => $_POST['correo'],
-                'cargo' => $_POST['cargo']
+                'cargo' => $_POST['cargo'],
+                'estado'=> $_POST['estado']
            ];
-           var_dump($data);
+           
             $this->employeeModel->updateEmployees($data);
             
             header('Location:index.php?controllers=EmployeeController&action=index');
@@ -100,4 +117,42 @@ class EmployeeController extends Controller {
         
         header('Location:index.php?controllers=EmployeeController&action=index');
     }
+
+    public function inactivate($id) {
+        $estado = 2;
+        if($this->employeeModel->updateStateEmployee($id, $estado)) {
+            header("Location: index.php?controller=EmployeeController&action=showInactiveEmployees");
+            exit();
+        } else {
+            echo "Error al inactivar al empleado";
+        }
+    }
+
+    public function inactiveEmployee() {
+        $inactiveEmployee = $this->employeeModel->getStateEmployee(2);
+        $this->view('employee/inactivos', ['employee' => $inactiveEmployee]);
+    }
+
+    public function reactivate($id) {
+        $estado = 1;
+        if($this->employeeModel->updateStateEmployee($id, $estado)) {
+            header('Location:index.php?controllers=EmployeeController&action=index');
+            exit();
+        } else {
+            echo "Error al reactivar al empleado";
+        }
+    }
+
+    public function showInactiveEmployees(){
+        $estado = 2;
+        $employees =$this->employeeModel->getStateEmployee($estado);
+        $this->view('employee/inactivos',['employees'=> $employees]);
+    }
+
+    public function showActiveEmployees(){
+        $estado = 1;
+        $employees = $this->employeeModel->getStateEmployee($estado);
+        $this->view('employee/index',['employees'=> $employees]);
+    }
+
 }
